@@ -1,0 +1,77 @@
+# Implementation Plan - Phase 3: Product Listings with Search, Filter, and Pagination
+
+We will implement a complete product catalog system. This includes the database schema for products, a database seed script, a search and filter API on the backend with pagination support, reusable frontend product cards, and catalog navigation pages.
+
+---
+
+## Proposed Changes
+
+### Backend Components
+
+We will create the product schema, query controllers, product routes, and a standalone data seeding script.
+
+#### [NEW] [Product.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/models/Product.js)
+Defines the schema for product listings including price, image links, stock count, categories, and reviews data.
+
+#### [NEW] [productController.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/controllers/productController.js)
+Handles queries:
+- `getAllProducts`: Search by name matching (`$regex`), filter by category or price range (`$gte`/`$lte`), and slice array for pagination page bounds.
+- `getProductById`: Retrieves single product details.
+- `createProduct` / `updateProduct` / `deleteProduct`: Admin-protected controllers.
+
+#### [NEW] [productRoutes.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/routes/productRoutes.js)
+Exposes endpoint routes:
+- `GET /api/products` (Public catalog list)
+- `GET /api/products/:id` (Public single details)
+- `POST /api/products` (Admin-only creation)
+- `PUT /api/products/:id` (Admin-only edit)
+- `DELETE /api/products/:id` (Admin-only deletion)
+
+#### [NEW] [seed.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/seed.js)
+A standalone Node script that connects directly to the MongoDB cluster, clears any existing products, and inserts 10 high-quality dummy products.
+
+#### [MODIFY] [server.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/server.js)
+Mount the product routes under `/api/products`.
+
+---
+
+### Frontend Components
+
+We will build the catalog grid view, detailed pages, loading components, and configure public routing.
+
+#### [NEW] [ProductCard.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/components/ProductCard.jsx)
+A reusable component displaying a product image, name, price tag, category badge, and interactive actions.
+
+#### [NEW] [ProductsPage.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/ProductsPage.jsx)
+The main product feed showing:
+- A header search bar.
+- Filter panels (drop downs for categories and price thresholds).
+- A responsive grid of `ProductCard` items.
+- Dynamic page buttons at the bottom for pagination.
+
+#### [NEW] [ProductDetailPage.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/ProductDetailPage.jsx)
+A full layout display shown when clicking a product, rendering descriptions, price, reviews details, stock status, and actions.
+
+#### [MODIFY] [App.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/App.jsx)
+Configure public routing rules:
+- `/` maps to `ProductsPage`.
+- `/product/:id` maps to `ProductDetailPage`.
+- Maintain login and registration paths.
+- Secure user details page under `/dashboard`.
+
+---
+
+## Verification Plan
+
+### Backend Verification
+1. **Database Seeding**:
+   - Run `node seed.js` inside the backend folder.
+   - Verify that 10 records are inserted successfully.
+2. **Catalog Query Test**:
+   - `GET http://localhost:5000/api/products?keyword=camera&pageNumber=1`
+   - Verify pagination bounds and regular expression matching.
+
+### Frontend Verification
+- Verify that the catalog page displays a responsive grid.
+- Test typing in the search bar and changing category filters.
+- Verify clicking a product card loads the details view correctly.

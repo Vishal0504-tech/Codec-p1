@@ -1,0 +1,74 @@
+# Implementation Plan - Phase 5: Admin Dashboard for Inventory Management
+
+We will implement an administrative dashboard to manage inventory, track orders, review statistics, and manage users. This includes role-based access control (RBAC), summary APIs, reusable table views, product forms with validation, and delivery updates.
+
+---
+
+## Proposed Changes
+
+### Backend Components
+
+We will create the administrative routes, query controllers, and summary API endpoint.
+
+#### [NEW] [adminController.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/controllers/adminController.js)
+Contains administrative handlers:
+- `getSummary`: Fetches statistics counts (total products, total users, total orders) and aggregates total paid revenue.
+- `getOrders`: Returns all orders (populated with customer names).
+- `deliverOrder`: Updates order delivery status markers in Mongoose.
+- `getUsers`: Returns all user records.
+- `deleteUser`: Evicts standard users from MongoDB (guards against self-deletion).
+
+#### [NEW] [adminRoutes.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/routes/adminRoutes.js)
+Exposes the admin paths (wrapped entirely with `protect` and `admin` middleware):
+- `GET /api/admin/summary`
+- `GET /api/admin/orders`
+- `PUT /api/admin/orders/:id/deliver`
+- `GET /api/admin/users`
+- `DELETE /api/admin/users/:id`
+
+#### [MODIFY] [server.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/server.js)
+Mount the admin routes under `/api/admin`.
+
+---
+
+### Frontend Components
+
+We will create the sidebar navigation, layout page, stats displays, product forms, user lists, and edit components.
+
+#### [NEW] [AdminLayout.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/layouts/AdminLayout.jsx)
+A layout wrapper showing a sidebar (Dashboard, Products, Orders, Users) and main view panel. Redirects non-admin users to the home catalog.
+
+#### [NEW] [Dashboard.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/admin/Dashboard.jsx)
+Administrative dashboard showing stat cards for Total Revenue, Orders, Products, and Users.
+
+#### [NEW] [ProductList.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/admin/ProductList.jsx)
+Lists products in a reusable table component with links to add, edit, or delete items.
+
+#### [NEW] [ProductForm.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/admin/ProductForm.jsx)
+Form page for creating new products or updating existing records, with validation rules.
+
+#### [NEW] [OrderList.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/admin/OrderList.jsx)
+Table view of orders displaying customer names, totals, paid dates, and delivery check buttons.
+
+#### [NEW] [UserList.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/admin/UserList.jsx)
+Table view listing registered database users with delete options.
+
+#### [MODIFY] [App.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/App.jsx)
+Map router paths:
+- Wrap `/admin/*` routes under the `AdminLayout` wrapper.
+- Configure routes for dashboard summary, product list, product editor, orders list, and user list.
+
+---
+
+## Verification Plan
+
+### Backend Verification
+1. **Admin Authorization Guard Test**:
+   - `GET http://localhost:5000/api/admin/summary` (without token) -> Expected: `401 Unauthorized`
+   - `GET http://localhost:5000/api/admin/summary` (with standard user token) -> Expected: `403 Forbidden`
+   - `GET http://localhost:5000/api/admin/summary` (with admin user token) -> Expected: `200 OK` with JSON stats.
+
+### Frontend Verification
+- Log in as admin and verify the sidebar loads successfully.
+- Test adding and editing a product, validating inputs, and verifying changes on the main catalog feed.
+- Mark an order as delivered and verify the changes update instantly.

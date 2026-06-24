@@ -1,0 +1,87 @@
+# Implementation Plan - Phase 4: Shopping Cart and Checkout with Stripe Payment
+
+We will implement a complete checkout flow. This includes global shopping cart state management using `useReducer`, a cart review page, backend database schemas for orders, a payment endpoint integrating Stripe Checkout sessions, and custom success/failed landing pages.
+
+---
+
+## Proposed Changes
+
+### Backend Components
+
+We will create the database order models, checkout session controller endpoints, and payment routes.
+
+#### [NEW] [Order.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/models/Order.js)
+Defines the Mongoose order schema, capturing items bought, totalPrice, paymentResult logs, and delivery timestamps.
+
+#### [NEW] [orderController.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/controllers/orderController.js)
+Handles order database writes:
+- `createOrder`: Creates a new order in MongoDB.
+- `getOrderById`: Fetches an order by its ID.
+- `getMyOrders`: Returns the active user's past order list.
+
+#### [NEW] [paymentController.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/controllers/paymentController.js)
+Integrates Stripe SDK:
+- `createCheckoutSession`: Receives cart items, maps them to Stripe line items, creates a hosted checkout session, and returns the session URL.
+
+#### [NEW] [orderRoutes.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/routes/orderRoutes.js)
+Exposes endpoints for orders:
+- `POST /api/orders` (Private)
+- `GET /api/orders/myorders` (Private)
+- `GET /api/orders/:id` (Private)
+
+#### [NEW] [paymentRoutes.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/routes/paymentRoutes.js)
+Exposes endpoints for payments:
+- `POST /api/payment/create-checkout-session` (Private)
+
+#### [MODIFY] [server.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/server.js)
+Mount the order routes under `/api/orders` and payment routes under `/api/payment`.
+
+---
+
+### Frontend Components
+
+We will build the state reducer, catalog page updates, cart page, and Stripe landing pages.
+
+#### [NEW] [CartContext.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/context/CartContext.jsx)
+Manages the cart state array. Uses `useReducer` to safely update counts, add items, and empty lists.
+
+#### [NEW] [useCart.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/hooks/useCart.js)
+A simplified hook shorthand to consume the `CartContext` state.
+
+#### [NEW] [CartPage.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/CartPage.jsx)
+The shopping cart checkout preparation page:
+- Lists all active cart products with images, prices, subtotal calculations, and item counts.
+- Displays a final subtotal summary card.
+- Features a checkout button redirecting users to the Stripe Checkout page.
+
+#### [NEW] [OrderSuccess.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/OrderSuccess.jsx)
+The post-checkout landing screen shown upon successful payment.
+
+#### [NEW] [OrderFailed.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/OrderFailed.jsx)
+The checkout cancel/error landing screen shown when payments are canceled or fail.
+
+#### [NEW] [Navbar.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/components/Navbar.jsx)
+Refactor a global navigation header component to display the application logo, profile options, and a cart item count badge.
+
+#### [MODIFY] [App.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/App.jsx)
+Configure public and protected routes:
+- Wrap application with `CartProvider`.
+- Inject the reusable `<Navbar />` header.
+- Add routes for `/cart`, `/checkout-success`, and `/checkout-failed`.
+
+---
+
+## Verification Plan
+
+### Backend Verification
+1. **Create Checkout Session Test**:
+   - `POST http://localhost:5000/api/payment/create-checkout-session`
+   - Header: `Authorization: Bearer <JWT_TOKEN>`
+   - Body: `{ "cartItems": [ { "_id": "prod_1", "name": "Item", "price": 100, "qty": 2 } ] }`
+   - Expected Output: Status 200 with a `url` link to Stripe Checkout.
+
+### Frontend Verification
+- Verify that items added on ProductsPage update the navbar cart badge.
+- Test changing quantities on CartPage and verify subtotal calculations.
+- Test clicking "Proceed to Checkout" redirects to Stripe.
+- Perform a dummy test checkout using Stripe's `4242` test card and verify landing on OrderSuccess.

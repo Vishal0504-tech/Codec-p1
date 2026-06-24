@@ -1,0 +1,81 @@
+# Implementation Plan - Phase 2: User Authentication with JWT
+
+We will build a secure authentication flow using JSON Web Tokens (JWT) for authentication and bcryptjs for password hashing. This includes the database user model, backend API routes, protective middleware, global frontend state using React Context API, user forms, and route guards.
+
+---
+
+## Proposed Changes
+
+### Backend Components
+
+We will create the authentication controllers, routes, schemas, and helper utilities.
+
+#### [NEW] [User.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/models/User.js)
+Defines the structure for MongoDB user documents, including passwords that are salted and hashed.
+
+#### [NEW] [generateToken.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/utils/generateToken.js)
+A utility function to sign JWT tokens containing the user's database ID and role.
+
+#### [NEW] [authController.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/controllers/authController.js)
+Contains the request logic:
+- `registerUser`: Validates input, hashes password, saves the user, and issues a JWT token.
+- `loginUser`: Compares passwords, issues a JWT token.
+- `getUserProfile`: Returns current user details from the decoded token (protected route).
+
+#### [NEW] [authMiddleware.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/middleware/authMiddleware.js)
+Express middleware to guard routes. It checks for a JWT in the `Authorization` header, decodes it, and attaches the user's database record to the request.
+
+#### [NEW] [authRoutes.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/routes/authRoutes.js)
+Configures Express endpoints for user operations:
+- `POST /api/auth/register` (Public)
+- `POST /api/auth/login` (Public)
+- `GET /api/auth/profile` (Protected - requires valid JWT)
+
+#### [MODIFY] [server.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/backend/server.js)
+Import and mount the authentication endpoints under the `/api/auth` path.
+
+---
+
+### Frontend Components
+
+We will build the state providers, hooks, navigation logic, and authentication forms.
+
+#### [NEW] [AuthContext.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/context/AuthContext.jsx)
+React Context file containing the global user state, registration calls, login request actions, logout actions, and active token states.
+
+#### [NEW] [useAuth.js](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/hooks/useAuth.js)
+A simplified hook shorthand to consume the `AuthContext` state inside any page or component.
+
+#### [NEW] [ProtectedRoute.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/components/ProtectedRoute.jsx)
+A React Router route guard that check user authentication state and redirects guest visitors away from private dashboards.
+
+#### [NEW] [Register.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/Register.jsx)
+A registration form page where users enter their name, email, and password. Calls our backend API.
+
+#### [NEW] [Login.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/pages/Login.jsx)
+A login form page allowing users to submit credentials and obtain a JWT session token.
+
+#### [MODIFY] [App.jsx](file:///e:/Vishal%20Folder/codex%20intern/Ecommerce%20website/frontend/src/App.jsx)
+Configure React routing paths to wrap the entire app with `AuthProvider` and secure protected pages using `ProtectedRoute`.
+
+---
+
+## Verification Plan
+
+### Automated/Local API Verification
+We will verify endpoints using a local API request or a Node test script:
+1. **User Registration Test**:
+   - `POST http://localhost:5000/api/auth/register`
+   - Request payload: `{ "name": "Test User", "email": "test@example.com", "password": "password123" }`
+   - Expected Output: Status 201 with `_id`, `name`, `email`, `role`, and `token` fields.
+2. **User Login Test**:
+   - `POST http://localhost:5000/api/auth/login`
+   - Request payload: `{ "email": "test@example.com", "password": "password123" }`
+   - Expected Output: Status 200 with the matching user record and token.
+3. **Protected Route Verification**:
+   - `GET http://localhost:5000/api/auth/profile`
+   - Header: `Authorization: Bearer <JWT_TOKEN>`
+   - Expected Output: Status 200 with user information, confirming middleware decoding works.
+
+### Manual Verification
+- We will boot the Vite frontend app and test user registration, token caching in localStorage, page redirects, and login sessions.

@@ -1,0 +1,269 @@
+@import "tailwindcss";
+
+/* -------------------------------------------------------------
+   GLOBAL PREMIUM DARK-TECH OVERRIDES (Match TechNova Image Style)
+   ------------------------------------------------------------- */
+
+/* Page Background Overrides */
+.bg-slate-950,
+body {
+  background-color: #030712 !important; /* Obsidian black background */
+  background-image: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(14, 165, 233, 0.15), rgba(3, 7, 18, 0)) !important; /* Premium cyan-blue glow top */
+  color: #f8fafc !important;
+}
+
+/* Card & Section Container Overrides */
+.backdrop-blur-xl.bg-white\/5,
+.backdrop-blur-md.bg-white\/5,
+.bg-white\/5,
+.bg-slate-900\/60,
+.bg-slate-900 {
+  background-color: rgba(15, 23, 42, 0.6) !important; /* Premium dark navy-slate card */
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-color: rgba(30, 41, 59, 0.8) !important; /* Subtle gray-blue border */
+}
+
+.border-white\/10,
+.border-white\/5 {
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Specific Card Styling (e.g. Product Cards) */
+.group.backdrop-blur-xl {
+  background-color: rgba(11, 15, 25, 0.7) !important;
+  border-color: rgba(30, 41, 59, 0.6) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.group.backdrop-blur-xl:hover {
+  border-color: rgba(14, 165, 233, 0.3) !important; /* Glow border on hover */
+  box-shadow: 0 10px 25px -3px rgba(14, 165, 233, 0.15), 0 4px 6px -4px rgba(14, 165, 233, 0.15) !important;
+}
+
+/* Headings & Text Color Overrides */
+.text-white,
+.text-slate-100 {
+  color: #ffffff !important;
+}
+
+.text-slate-200 {
+  color: #f1f5f9 !important;
+}
+
+.text-slate-300 {
+  color: #e2e8f0 !important;
+}
+
+.text-slate-400 {
+  color: #94a3b8 !important; /* Steel gray description */
+}
+
+.text-slate-500 {
+  color: #64748b !important;
+}
+
+.text-slate-600 {
+  color: #475569 !important;
+}
+
+/* Accent Color Remapping (Violet/Indigo -> Electric Cyan-Blue) */
+.text-violet-400,
+.text-indigo-400,
+.text-violet-500 {
+  color: #38bdf8 !important; /* Bright Neon Sky Blue */
+}
+
+.bg-violet-600,
+.bg-indigo-600,
+.bg-violet-500 {
+  background-color: #0ea5e9 !important; /* Vivid Cyan-Blue */
+}
+
+.hover\:bg-violet-500:hover,
+.hover\:bg-indigo-500:hover {
+  background-color: #0284c7 !important; /* Slightly darker cyan-blue hover state */
+}
+
+.border-violet-500\/20,
+.border-violet-500\/10 {
+  border-color: rgba(14, 165, 233, 0.25) !important;
+}
+
+.bg-violet-500\/10 {
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  color: #38bdf8 !important;
+}
+
+.bg-violet-600\/10 {
+  background-color: rgba(14, 165, 233, 0.08) !important;
+  color: #38bdf8 !important;
+}
+
+.bg-violet-600\/10:hover {
+  background-color: #0ea5e9 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure white text is retained inside colored components */
+.bg-violet-600.text-white,
+.bg-indigo-600.text-white,
+.bg-violet-500.text-white,
+.bg-blue-600.text-white,
+.bg-gradient-to-tr.text-white,
+.bg-gradient-to-r.text-white,
+.bg-emerald-600.text-white,
+.bg-emerald-500.text-white,
+.bg-red-500.text-white,
+.bg-red-600.text-white,
+.bg-slate-900.text-white,
+button.text-white,
+.btn.text-white,
+a.text-white,
+span.text-white,
+.bg-violet-600 .text-white,
+.bg-gradient-to-r .text-white,
+.bg-violet-600 span,
+.bg-violet-600 strong {
+  color: #ffffff !important;
+}
+
+/* Star rating symbol colors */
+.text-amber-400 {
+  color: #38bdf8 !important; /* Neon sky blue stars matching tech store style in image */
+}
+
+/* Unfilled star color adjustment */
+.text-slate-600 {
+  color: #334155 !important;
+}
+
+/* Global Navbar Styling Specifics */
+nav.bg-slate-950\/50 {
+  background-color: rgba(3, 7, 18, 0.8) !important;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8) !important;
+}
+
+nav .text-slate-300 {
+  color: #94a3b8 !important;
+}
+
+nav .text-slate-300:hover {
+  color: #38bdf8 !important;
+}
+
+nav .border-l {
+  border-left-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Forms: Inputs & Select Dropdowns */
+input,
+select,
+textarea {
+  background-color: #090d16 !important;
+  border-color: rgba(30, 41, 59, 0.8) !important;
+  color: #ffffff !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #0ea5e9 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15) !important;
+}
+
+input::placeholder {
+  color: #475569 !important;
+}
+
+/* Sidebar Specifics (Admin portal / layouts) */
+aside {
+  background-color: rgba(11, 15, 25, 0.8) !important;
+  border-right-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+aside .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+aside .text-slate-400:hover {
+  color: #38bdf8 !important;
+  background-color: rgba(14, 165, 233, 0.05) !important;
+}
+
+/* Active sidebar item highlights */
+aside .bg-violet-600 {
+  background-color: #0ea5e9 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.25) !important;
+}
+
+aside .bg-violet-600 span {
+  color: #ffffff !important;
+}
+
+/* Footer layout elements */
+footer {
+  border-top-color: rgba(30, 41, 59, 0.8) !important;
+  color: #475569 !important;
+}
+
+/* Linear/Radial Gradients */
+.bg-gradient-to-r.from-violet-400.via-indigo-200.to-indigo-400 {
+  background-image: linear-gradient(to right, #38bdf8, #818cf8) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  font-weight: 800 !important;
+}
+
+.bg-gradient-to-r.from-violet-600.to-indigo-600 {
+  background-image: linear-gradient(to right, #0ea5e9, #0284c7) !important;
+}
+
+.bg-gradient-to-tr.from-violet-600.to-indigo-600 {
+  background-image: linear-gradient(to top right, #0ea5e9, #0284c7) !important;
+}
+
+.bg-gradient-to-tr.from-emerald-600.to-teal-500 {
+  background-image: linear-gradient(to top right, #059669, #0d9488) !important;
+}
+
+/* Status Badges */
+.bg-emerald-500\/10 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+}
+
+.bg-red-500\/10 {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+}
+
+/* Scrollbar styles override */
+.scrollbar-thin {
+  scrollbar-width: thin !important;
+}
+
+.scrollbar-thumb-slate-800 {
+  --scrollbar-thumb: #1e293b !important;
+}
+
+/* Quantity inputs/dropdown overlays */
+.bg-slate-900.border-slate-800 {
+  background-color: #090d16 !important;
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Order Success/Failed pages */
+.absolute.-top-10.-left-10.bg-emerald-500,
+.absolute.-top-10.-left-10.bg-violet-500 {
+  display: block !important;
+  background-color: #0ea5e9 !important;
+  filter: blur(100px) !important;
+  opacity: 0.15 !important;
+}
