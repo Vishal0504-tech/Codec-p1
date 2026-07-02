@@ -34,6 +34,8 @@ export const createCheckoutSession = async (req, res) => {
       };
     });
 
+    const frontendUrl = process.env.FRONTEND_URL || req.headers.origin;
+
     // Create the session configuration
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'], // Allow credit card payments
@@ -44,8 +46,8 @@ export const createCheckoutSession = async (req, res) => {
       },
       // Define redirection hooks on success or cancellation:
       // {CHECKOUT_SESSION_ID} is a dynamic variable Stripe will replace with the real session ID on success
-      success_url: `${req.headers.origin}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/checkout-failed`,
+      success_url: `${frontendUrl}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontendUrl}/checkout-failed`,
       // Attach the user ID and order ID as metadata to identify who placed this checkout
       metadata: {
         userId: req.user._id.toString(),
